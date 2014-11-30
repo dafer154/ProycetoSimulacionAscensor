@@ -17,12 +17,14 @@ SOURCES += main.cpp\
     aleatorios.cpp \
     evento.cpp \
     lef.cpp \
-    metodosauxiliares.cpp
+    metodosauxiliares.cpp \
+    mainsimulacion.cpp
 
 HEADERS  += mainwindow.h \
     aleatorios.h \
     evento.h \
     lef.h \
-    metodosauxiliares.h
+    metodosauxiliares.h \
+    mainsimulacion.h
 
 FORMS    += mainwindow.ui
