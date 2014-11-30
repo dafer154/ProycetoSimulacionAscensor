@@ -19,8 +19,7 @@ int main(int argc, char *argv[])
 //Para hacer cosas con consola mientras no hay GUI
 int main(){
 
-
-
+    /*Ejemplo de uso de generacion de aleatorios 
     double parametroPrimerPiso = 0.0025;
     double parametroDemasPisos = 0.002;
 
@@ -56,6 +55,7 @@ int main(){
 
     }
     cout<<  "promedio: " << promedio/20 << endl;
+    */
 
     return 0;
 
