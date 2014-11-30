@@ -1,5 +1,6 @@
 #ifndef EVENTO_H
 #define EVENTO_H
+#include <QString>
 
 class Evento
 {
@@ -7,7 +8,7 @@ public:
 
     Evento();
 
-   char tipoEvento;//
+   QString tipoEvento;//
    int tiempo;//
 
    void llegadaPersonaPiso();
