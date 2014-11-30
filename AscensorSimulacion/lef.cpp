@@ -29,7 +29,7 @@ listaEventos.push_back(event);
 }
 
 Lef::quitarEvento(){
-listaEventos.removeLast();
+listaEventos.removeFirst();
 }
 
 
