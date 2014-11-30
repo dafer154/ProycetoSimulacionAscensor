@@ -15,10 +15,10 @@ using namespace std;
 Aleatorios::Aleatorios(){
 }
 
-double Aleatorios::generarEnteroAleatorioUniforme(){
+double Aleatorios::generarAleatorioUniforme(){
     return RanGen.Random();
 }
 
 int Aleatorios::generarEnteroAleatorioExponencial(double parametro){
-    return (-1/parametro)*log(generarEnteroAleatorioUniforme());
+    return (-1/parametro)*log(generarAleatorioUniforme());
 }

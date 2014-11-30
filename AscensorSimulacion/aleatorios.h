@@ -9,7 +9,7 @@ public:
     Aleatorios();
     int semilla = (int)time(0);
     CRandomMersenne RanGen {semilla};
-    double generarEnteroAleatorioUniforme();
+    double generarAleatorioUniforme();
     int generarEnteroAleatorioExponencial(double parametro);
     
 };

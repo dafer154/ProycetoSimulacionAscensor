@@ -2,6 +2,9 @@
 #include <QApplication>
 #include <iostream>
 #include "aleatorios.h"
+#include "metodosauxiliares.h"
+#include "vector"
+
 
 using namespace std;
 /* Comentado mientras no halla GUI
@@ -19,7 +22,7 @@ int main(int argc, char *argv[])
 //Para hacer cosas con consola mientras no hay GUI
 int main(){
 
-    /*Ejemplo de uso de generacion de aleatorios 
+    /*Ejemplo de uso de generacion de aleatorios
     double parametroPrimerPiso = 0.0025;
     double parametroDemasPisos = 0.002;
 
@@ -43,19 +46,30 @@ int main(){
     cout<<  "promedio: " << promedio/20 << endl;
     cout<< "________________________________________________" << endl;
 
-    promedio =0;
 
-    for (int var2 = 0; var2 < 20; ++var2) {
-        uniforme = aleatorios.generarEnteroAleatorioUniforme();
-           exponencial = aleatorios.generarEnteroAleatorioExponencial(parametroDemasPisos);
+    */
 
-           promedio +=exponencial ;
 
-            cout<< "Uniforme: " << uniforme << " Exponencial: " << exponencial << endl;
+    /*
+    //Prueba calcular piso
+    MetodosAuxiliares auxiliares(6);
+
+    vector <double>pisos;
+    for (int var = 0; var < 6; ++var) {
+        pisos.push_back(0);
 
     }
-    cout<<  "promedio: " << promedio/20 << endl;
+
+    for (int var = 0; var < 5000; ++var) {
+        pisos[auxiliares.calcularPisoActualPersona()-1]++;
+    }
+
+    for (int var = 0; var < 6; ++var) {
+        cout<< "Piso: " <<  var+1 << ": " << pisos[var]/5000<< endl;
+    }
     */
+
+
 
     return 0;
 
