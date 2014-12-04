@@ -6,19 +6,16 @@ class Lef
 {
 public:
     Lef();
-    //personas
-    int tEntreLLegada,hLlegada,pActualPersona,pDestinoPersona,
-   //ascensor
-    capacidadOc,pActualAscensor,pDestinoAscensor,tipoLef,
-    reloj,cantidadPisos,cantidadAscensores;
-    bool arriba;
 
 
-    QVector <int> colaAdentro,colaAfuera;
-    QVector<Evento>listaEventos;
+private:
+
+    QVector<Evento>LEF;
     void agregarEvento(Evento event);
     void quitarEvento();
-    void inicializar();
+    void ordenarLEF();
+
+
 
 };
 

@@ -15,16 +15,16 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     aleatorios.cpp \
-    evento.cpp \
     lef.cpp \
     metodosauxiliares.cpp \
-    mainsimulacion.cpp
+    mainsimulacion.cpp \
+    evento.cpp
 
 HEADERS  += mainwindow.h \
     aleatorios.h \
-    evento.h \
     lef.h \
     metodosauxiliares.h \
-    mainsimulacion.h
+    mainsimulacion.h \
+    evento.h
 
 FORMS    += mainwindow.ui

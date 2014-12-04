@@ -3,9 +3,28 @@
 MainSimulacion::MainSimulacion()
 {
 }
-MainSimulacion::iniciarSimulacion(){
-    l.inicializar();
 
+
+
+MainSimulacion::inicializar(){//main Simulacion
+  tEntreLLegada=0;
+  hLlegada=0;
+  pActualPersona=0;
+  pDestinoPersona=0;
+  capacidadOc=0;
+  pActualAscensor=0;
+  pDestinoPersona=0;
+  cantidadPisos=0;
+  cantidadAscensores=0;
+  arriba=true;
+  colaAdentro=new MainSimulacion();
+  colaAfuera=new MainSimulacion();
+
+
+}
+
+
+MainSimulacion::iniciarSimulacion(){
 
     while(!l.listaEventos.size()==0,)
     {

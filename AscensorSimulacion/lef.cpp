@@ -5,32 +5,32 @@ Lef::Lef()
 {
 }
 
-LEF::inicializar(){
-  tEntreLLegada=0;
-  hLlegada=0;
-  pActualPersona=0;
-  pDestinoPersona=0;
-  //colaAdentro
- //colaAfuera
-   //ascensor
-  capacidadOc=0;
-  pActualAscensor=0;
-  pisodestino=0;
-  reloj=0;
-  cantidadPisos=0;
-  cantidadAscensores=0;
-  arriba=true;
-
-}
-
-
 Lef::agregarEvento(Evento event){
-listaEventos.push_back(event);
+    listaEventos.push_back(event);
+    ordenarLEF();
 }
+
 
 Lef::quitarEvento(){
-listaEventos.removeFirst();
+    LEF.removeFirst();
 }
+
+Lef::ordenarLEF(){
+    int size = LEF.length();
+    for (int i = 0; i < size; ++i) {
+        for (int j = i+1; j < size-1; ++j) {
+            if(LEF.at(i).geTiempo()>LEF.at(j).getTiempo()){
+                Event tempEvent = LEF.at(i);
+                LEF.replace(i, LEF.at(j));
+                LEF.replace(j, tempEvent);
+            }
+        }
+
+    }
+}
+
+
+
 
 
 

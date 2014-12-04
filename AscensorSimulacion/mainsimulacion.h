@@ -7,7 +7,21 @@ class MainSimulacion
 {
 public:
     MainSimulacion();
-    Lef l;
+    Lef l; //lef
+    int //personas
+    tEntreLLegada,hLlegada,pActualPersona,pDestinoPersona;
+    //ascensor
+    int capacidadOc,pActualAscensor,pDestinoAscensor;
+    bool arriba;
+    //edificio
+    int cantidadPisos,cantidadAscensores;
+
+    QVector <int> colaAdentro,colaAfuera;//mainSimulacion;
+
+
+
+    void inicializar();
+
     void iniciarSimulacion();
 
 };
