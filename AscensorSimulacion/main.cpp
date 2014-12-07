@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include <QApplication>
 
-/* Comentado mientras no halla GUI
+// Comentado mientras no halla GUI
 
 int main(int argc, char *argv[])
 {
@@ -11,10 +11,10 @@ int main(int argc, char *argv[])
 
     return a.exec();
 }
-*/
+
 
 //Para hacer cosas con consola mientras no hay GUI
-int main(){
+//int main(){
 
-    return 0;
-}
+  //  return 0;}
+

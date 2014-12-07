@@ -1,20 +1,16 @@
 #ifndef LEF_H
 #define LEF_H
 #include <QVector>
-#include<evento.h>
+//#include<evento.h>
 class Lef
 {
 public:
     Lef();
-
-
-private:
-
-    QVector<Evento>LEF;
-    void agregarEvento(Evento event);
-    void quitarEvento();
+  /*  QVector<Evento>lef;
+    void agregarEvento(Evento *event);
+    Evento quitarEvento();
     void ordenarLEF();
-
+*/
 
 
 };

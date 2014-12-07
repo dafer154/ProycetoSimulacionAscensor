@@ -13,7 +13,13 @@ class MainWindow : public QMainWindow
 
 public:
     explicit MainWindow(QWidget *parent = 0);
+
+    void nuevaTab();
+    void cerrarTab(int index);
     ~MainWindow();
+
+private slots:
+    void on_pb_iniciarSimulacion_clicked();
 
 private:
     Ui::MainWindow *ui;

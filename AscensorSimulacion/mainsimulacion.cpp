@@ -1,14 +1,15 @@
 #include "mainsimulacion.h"
-#include "evento.h"
 MainSimulacion::MainSimulacion()
 {
 }
 
-
+/*
 
 MainSimulacion::inicializar(){//main Simulacion
+  reloj=0;
   tEntreLLegada=0;
-  hLlegada=0;
+  tEntradaAscensorPersona=0;//se pide en la gui
+  tSalidaAscensorPersona=0;//se pide en la gui
   pActualPersona=0;
   pDestinoPersona=0;
   capacidadOc=0;
@@ -16,9 +17,12 @@ MainSimulacion::inicializar(){//main Simulacion
   pDestinoPersona=0;
   cantidadPisos=0;
   cantidadAscensores=0;
-  arriba=true;
-  colaAdentro=new MainSimulacion();
-  colaAfuera=new MainSimulacion();
+  subiendo=true;
+  colaAdentro(cantidadPisos);
+  colaAfuera(cantidadPisos);
+  colaAdentro.clear();
+  colaAfuera.clear();
+
 
 
 }
@@ -26,9 +30,10 @@ MainSimulacion::inicializar(){//main Simulacion
 
 MainSimulacion::iniciarSimulacion(){
 
-    while(!l.listaEventos.size()==0,)
+    while(!l.LEF.size()==0,)
     {
-        switch (l.listaEventos.at(0).tipoEvento) {
+        //Evento evento = lef.sacar();
+        switch (l.listaEventos.at().tipoEvento) {
         case "LPP":
 
             break;
@@ -44,4 +49,4 @@ MainSimulacion::iniciarSimulacion(){
 
     }
 
-}
+}*/

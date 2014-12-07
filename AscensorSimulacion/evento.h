@@ -9,10 +9,10 @@ class Evento
 public:
 
     Evento();
-
+/*
    QString tipoEvento;//
    int tiempo;//
-   Lef lef;
+   //Lef lef;
    MetodosAuxiliares met;
 
 
@@ -21,5 +21,6 @@ public:
    void llegadaPersonaPiso();
    void entradaPersonaAscensor();
    void cambioPisoAscensor();
-
+*/
 #endif // EVENTO_H
+

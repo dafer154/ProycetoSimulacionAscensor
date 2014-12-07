@@ -1,13 +1,10 @@
 #include "evento.h"
-#include "lef.h"
 
 Evento::Evento()
 {
 }
-Evento::~Evento()
-{
-}
 
+/*
 //nota: Renombrar esta clase con el nombre Eventos y crear la clase Evento con el constructor recibiendo dos parametros y crearle un destructor.
 //nota: renombrar el objeto llamarlista por uno objeto de la clase mainSimulacion
 //nota: Tener en cuenta q el objeto creado de la clase LEF debe llamarse lef
@@ -100,5 +97,5 @@ void Evento::cambioPisoAscensor()
 
         llamarLista.capacidadOcupada --;
     }
-}
+}*/
 
