@@ -21,3 +21,19 @@ int MetodosAuxiliares::calcularPisoActualPersona(){
 
     return round(aleatorioUniforme/tamanioIntervalos)-2;
 }
+
+int MetodosAuxiliares::calcularPisoDestinAscensor(QVector<int> colaAfuera, QVector<int> colaAdentro,
+                                                  int pisoActual, bool subiendo){
+    int tamanioCola = colaAfuera.size();
+    if(pisoActual == tamanioCola){//Si està en el ùltimo piso, debe bajar.
+        subiendo=false;
+    }else if(pisoActual == 0){  //Si està en el primer piso, debe subir.
+        subiendo=true;
+    }
+    if (subiendo) {
+        //buscar piso mas cercano (numero mayor mas cercano)
+        for (int i = 0; i < tamanioCola; ++i) {
+
+        }
+    }
+}

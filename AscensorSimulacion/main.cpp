@@ -50,6 +50,7 @@ int main(){
     */
 
 
+    /*
     //Prueba calcular piso
     MetodosAuxiliares auxiliares(6);
 
@@ -66,6 +67,7 @@ int main(){
     for (int var = 0; var < 6; ++var) {
         cout<< "Piso: " <<  var+1 << ": " << pisos[var]/5000<< endl;
     }
+    */
 
 
 
