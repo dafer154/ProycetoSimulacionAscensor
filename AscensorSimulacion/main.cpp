@@ -16,5 +16,5 @@ int main(int argc, char *argv[])
 //Para hacer cosas con consola mientras no hay GUI
 int main(){
 
-    return ;
+    return 0;
 }

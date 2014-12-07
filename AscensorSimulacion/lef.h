@@ -7,11 +7,14 @@ class Lef
 public:
 
     Lef();
+    ~Lef();
 
-     QVector<Evento>LEF;
-     void agregarEvento(Evento event);
-     void quitarEvento();
-     void ordenarLEF();
+    QVector<Evento> LEF;
+    void agregarEvento(Evento evento);
+    Evento quitarEvento();
+    void ordenarLEF();
+
+
 
 };
 

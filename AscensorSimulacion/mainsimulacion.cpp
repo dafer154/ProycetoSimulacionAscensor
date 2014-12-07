@@ -4,9 +4,14 @@ MainSimulacion::MainSimulacion()
 {
 }
 
+MainSimulacion::~MainSimulacion()
+{
+}
 
-MainSimulacion::inicializar(){//main Simulacion
-  tEntreLLegada=0;
+
+void MainSimulacion::inicializar(){//main Simulacion
+
+    tEntreLLegada=0;
   hLlegada=0;
   pActualPersona=0;
   pDestinoPersona=0;
@@ -18,7 +23,7 @@ MainSimulacion::inicializar(){//main Simulacion
   reloj=0;
   tEntradaAscensorPersona=0;
   tSalidaAscensorPersona=0;
-  arriba=true;
+  subiendo=true;
   colaAdentro.clear();
   colaAfuera.clear();
 
@@ -26,24 +31,20 @@ MainSimulacion::inicializar(){//main Simulacion
 }
 
 
-MainSimulacion::iniciarSimulacion(){
-
-    while(!l.listaEventos.size()==0,)
+void MainSimulacion::iniciarSimulacion(){
+    while(!l.LEF.size()==0)
     {
-        switch (l.listaEventos.at(0).tipoEvento) {
-        case "LPP":
+        //Evento evento = lef.sacar();
 
+
+
+        switch(l.quitarEvento().getTipoEvento())
+        {
+        case 0:   //0 = LPP
             break;
-        case "EPA":
-
+        case 1:   // 1 =EPA
             break;
-        case "CPA":
-
+        case 2:   // 2 =CPA
             break;
-
         }
-
-
-    }
-
-}
+    }}

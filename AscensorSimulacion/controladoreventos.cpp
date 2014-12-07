@@ -1,6 +1,8 @@
 #include "controladoreventos.h"
 #include "lef.h"
 #include "mainsimulacion.h"
+#include "metodosauxiliares.h"
+#include "aleatorios.h"
 
 
 
@@ -21,109 +23,96 @@ void ControladorEventos::llegadaPersonaPiso()
 {
 
 
-    Lef lef;
-    MainSimulacion main;
+
+    //1. Calcular piso Actual Persona
+
+    int pisoActualPersona=auxiliar.calcularPisoAleatorioPersona();
+
+
 
     // 1.Generar llegada persona piso
     Evento eventoLPP;
 
-    int tiempoEntreLlegadas=0; //tiempo entre llegadas se genera aleatoriamente
 
-    eventoLPP.setTipoEvento("LPP");
+    int tiempoEntreLlegadas= auxiliar.tiempoEntreLLegadas(pisoActualPersona);
+
+
+    eventoLPP.setTipoEvento(0);
     eventoLPP.setTiempo(tiempoEntreLlegadas);
 
     lef.agregarEvento(eventoLPP);
 
 
-    //2. Calcular piso Actual Persona
-    int pisoActualPersona=0;//Metodo que calcula piso actual
-
     //3. ColaAfuera[PisoActualPersona]++
-    main.colaAfuera.replace(pisoActualPersona, main.colaAfuera.at(pisoActualPersona)++);
+
+    mainSimulacion.colaAfuera.replace(pisoActualPersona,
+                                      mainSimulacion.colaAfuera.at(pisoActualPersona)+1);
 
     //4. Generar entrada persona Ascensor
     Evento eventoEPA;
 
-    eventoEPA.setTipoEvento("EPA");
-    eventoEPA.setTiempo(main.reloj);
+    eventoEPA.setTipoEvento(1);
+    eventoEPA.setTiempo(mainSimulacion.reloj);
 
     lef.agregarEvento(eventoEPA);
 
+
 }
 
-void Evento::entradaPersonaAscensor()
+void ControladorEventos::entradaPersonaAscensor()
 {
-
-
-    MainSimulacion mainSimulacion;
-
-
     if((mainSimulacion.capacidadOc==mainSimulacion.capacidadMax)
             ||(mainSimulacion.colaAfuera.at(mainSimulacion.pActualAscensor)== 0))
     {
 
         //1.1 piso destino ascensor
-
-       mainSimulacion.pDestinoAscensor=0; // metodo que quenera el piso del destino del ascensor
+       // metodo que quenera el piso del destino del ascensor
+        mainSimulacion.pDestinoAscensor=auxiliar.calcularPisoDestinoAscensor(mainSimulacion.colaAfuera,
+                           mainSimulacion.colaAdentro, mainSimulacion.pActualAscensor, mainSimulacion.subiendo);
 
        //2.1 Generar Cambio Piso Ascensor
-
        Evento eventoCPA;
-
-       eventoCPA.setTipoEvento("CPA");
+       eventoCPA.setTipoEvento(2);
        eventoCPA.setTiempo(mainSimulacion.reloj
                            +((mainSimulacion.colaAdentro.at(mainSimulacion.pActualAscensor))*(mainSimulacion.tSalidaAscensorPersona))
                            +((mainSimulacion.colaAfuera.at(mainSimulacion.pActualAscensor))*(mainSimulacion.tEntradaAscensorPersona)));
 
-       lef.agregarEvento(eventoEPA);
-
-
+       lef.agregarEvento(eventoCPA);
     }
 
     else
     {
-
         //1.2  ColaAfuera[PisoActualAscensor]--
-
-        mainSimulacion.colaAfuera.replace(mainSimulacion.pActualAscensor, mainSimulacion.colaAfuera.at(mainSimulacion.pActualAscensor)--);
+        mainSimulacion.colaAfuera.replace(mainSimulacion.pActualAscensor,
+                                          mainSimulacion.colaAfuera.at(mainSimulacion.pActualAscensor)-1);
 
         //2.2 Piso Destino Persona
+        int pisoDestinoPersona=auxiliar.calcularPisoAleatorioPersona();
 
-        int pisoDestinoPersona=0;//Metodo que calcula piso destino persona
 
         //3.2 ColaAscensor[PisoDestinoPersona]++
 
-        mainSimulacion.colaAdentro.at(pisoDestinoPersona, mainSimulacion.colaAdentro.at(pisoDestinoPersona));
+        mainSimulacion.colaAdentro.replace(pisoDestinoPersona,
+                                           mainSimulacion.colaAdentro.at(pisoDestinoPersona) + 1);
 
         //4.2 capacidadOcupada++
 
         mainSimulacion.capacidadOc++;
 
         //5.2 Generar entrada persona ascensor
-
         Evento eventoEPA;
-
-        eventoEPA.setTipoEvento("EPA");
-        eventoEPA.setTiempo(main.reloj);
-
+        eventoEPA.setTipoEvento(1);
+        eventoEPA.setTiempo(mainSimulacion.reloj);
         lef.agregarEvento(eventoEPA);
 
     }
 }
 
-void Evento::cambioPisoAscensor()
+void ControladorEventos::cambioPisoAscensor()
 {
-    MainSimulacion mainSimulacion;
 
     //1. pisoActualAscensor = pisoDestinoAscensor
-
-
     mainSimulacion.pActualAscensor=mainSimulacion.pDestinoAscensor;
-
-
-
-    llamarLista.pActualAscensor=llamarLista.pDestinoAscensor;
-
 
 
     if(mainSimulacion.colaAdentro.at(mainSimulacion.pActualAscensor)==0)
@@ -132,8 +121,8 @@ void Evento::cambioPisoAscensor()
 
         Evento eventoEPA;
 
-        eventoEPA.setTipoEvento("EPA");
-        eventoEPA.setTiempo(main.reloj);
+        eventoEPA.setTipoEvento(1);
+        eventoEPA.setTiempo(mainSimulacion.reloj);
 
         lef.agregarEvento(eventoEPA);
     }
@@ -149,16 +138,14 @@ void Evento::cambioPisoAscensor()
 
         //4. ColaAscensor[PisoActual]--
 
-        mainSimulacion.colaAdentro.at(mainSimulacion.pActualAscensor, mainSimulacion.colaAdentro.at(mainSimulacion.pActualAscensor)++);
+        mainSimulacion.colaAdentro.replace(mainSimulacion.pActualAscensor,
+                                           mainSimulacion.colaAdentro.at(mainSimulacion.pActualAscensor) -1);
+
 
         //5. capacidad ocupada--
 
         mainSimulacion.capacidadOc--;
 
 
-
-        //llamarLista.colaAdentro.at(llamarLista.pActualAscensor).replace(llamarLista.colaAdentro.at(pActualAscensor)-1);;
-
-        //llamarLista.capacidadOcupada --;
     }
 }

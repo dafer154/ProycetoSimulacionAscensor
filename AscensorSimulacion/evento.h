@@ -7,7 +7,7 @@ class Evento
 
 private:
 
-    QString tipoEvento;//
+    int tipoEvento;//
     int tiempo;//
 
 public:
@@ -15,10 +15,10 @@ public:
     Evento();
 
 
-    QString getTipoEvento();
-    int getTiempo();
-    void setTipoEvento(x);
-    void setTiempo(x);
+    int getTipoEvento() const;
+    int getTiempo () const;
+    void setTipoEvento(int tipoEvento);
+    void setTiempo(int tiempo);
 
 
 

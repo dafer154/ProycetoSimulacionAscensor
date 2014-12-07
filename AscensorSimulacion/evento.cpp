@@ -6,32 +6,30 @@ Evento::Evento()
 {
 }
 
-Evento::~Evento()
-{
-}
 
 
-QString Evento::getTipoEvento(){
 
+int Evento::getTipoEvento() const{
     return tipoEvento;
 
 }
 
-int Evento::getTiempo(){
+int Evento::getTiempo() const{
 
     return tiempo;
 
 }
 
-void Evento::setTiempo(tiempo){
+void Evento::setTiempo(int tiempo){
 
     this->tiempo;
 }
 
 
-void Evento:: setTipoEvento(tiempo){
+void Evento:: setTipoEvento(int tipoEvento){
 
-    this->setTipoEvento();
+    this->tipoEvento;
+
 }
 
 
