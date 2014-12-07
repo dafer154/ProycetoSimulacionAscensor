@@ -1,25 +1,28 @@
 #ifndef EVENTO_H
 #define EVENTO_H
 #include <QString>
-#include "lef.h"
-#include "metodosauxiliares.h"
 
 class Evento
 {
+
+private:
+
+    QString tipoEvento;//
+    int tiempo;//
+
 public:
 
     Evento();
 
-   QString tipoEvento;//
-   int tiempo;//
-   Lef llamarLista;
-   MetodosAuxiliares met;
+
+    QString getTipoEvento();
+    int getTiempo();
+    void setTipoEvento(x);
+    void setTiempo(x);
 
 
-   //void crearEvento(QString tipoEvento, int tiempo);
 
-   void llegadaPersonaPiso();
-   void entradaPersonaAscensor();
-   void cambioPisoAscensor();
+
+};
 
 #endif // EVENTO_H
