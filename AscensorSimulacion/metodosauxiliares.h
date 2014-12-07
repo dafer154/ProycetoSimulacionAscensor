@@ -10,7 +10,7 @@ public:
     MetodosAuxiliares(int cantidadPisos);
     int cantidadPisos;
     int calcularPisoActualPersona();
-    int calcularPisoDestinAscensor(QVector<int> colaAfuera, QVector<int> colaAdentro,
+    int calcularPisoDestinoAscensor(QVector<int> colaAfuera, QVector<int> colaAdentro,
                                    int pisoActual, bool subiendo);
     Aleatorios aleatorios;
 };

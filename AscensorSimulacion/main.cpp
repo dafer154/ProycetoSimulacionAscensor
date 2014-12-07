@@ -51,7 +51,7 @@ int main(){
 
 
     /*
-    //Prueba calcular piso
+    //Prueba calcular calcularPisoActualPersona
     MetodosAuxiliares auxiliares(6);
 
     vector <double>pisos;
@@ -69,8 +69,36 @@ int main(){
     }
     */
 
+    //Prueba calcularPisoDestinAscensor
 
+   /* MetodosAuxiliares auxiliares(6);
 
+    QVector <int>colaAfuera;
+    colaAfuera.push_back(0);
+    colaAfuera.push_back(0);
+    colaAfuera.push_back(2);
+    colaAfuera.push_back(1);
+    colaAfuera.push_back(0);
+    colaAfuera.push_back(0);
+
+    QVector <int>colaAdentro;
+    colaAdentro.push_back(0);
+    colaAdentro.push_back(0);
+    colaAdentro.push_back(3);
+    colaAdentro.push_back(5);
+    colaAdentro.push_back(0);
+    colaAdentro.push_back(0);
+
+    bool subiendo = true;
+    int pisoActual = 0;
+    cout << "el piso destino subiendo  con piso actual = "<< pisoActual <<" es ==> " <<
+            auxiliares.calcularPisoDestinoAscensor(colaAfuera, colaAdentro,pisoActual,subiendo) << endl;
+
+    subiendo = false;
+    cout << "el piso destino bajando  con piso actual = "<< pisoActual <<" es ==> " <<
+            auxiliares.calcularPisoDestinoAscensor(colaAfuera, colaAdentro,pisoActual,subiendo) << endl;
+
+            */
     return 0;
 
 }
