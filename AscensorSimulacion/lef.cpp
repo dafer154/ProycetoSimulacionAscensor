@@ -1,5 +1,8 @@
 #include "lef.h"
 #include "evento.h"
+#include <iostream>
+using namespace std;
+
 
 Lef::Lef()
 {
@@ -29,6 +32,8 @@ void Lef::agregarEvento(Evento evento){
 
     LEF.push_back(evento);
     ordenarLEF();
+
+
 }
 
 

@@ -2,7 +2,7 @@
 #define METODOSAUXILIARES_H
 
 #include "aleatorios.h"
-#include "QVector"
+#include <QVector>
 
 class MetodosAuxiliares
 {

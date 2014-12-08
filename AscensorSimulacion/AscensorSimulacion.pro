@@ -19,7 +19,6 @@ SOURCES += main.cpp\
     lef.cpp \
     metodosauxiliares.cpp \
     mainsimulacion.cpp \
-    controladoreventos.cpp \
     RandomGenerator/mersenne.cpp \
     RandomGenerator/mother.cpp
 
@@ -29,8 +28,6 @@ HEADERS  += mainwindow.h \
     lef.h \
     metodosauxiliares.h \
     mainsimulacion.h \
-    controladoreventos.h \
-    RandomGenerator/randomc.h \
-    ControladorEventos.h
+    RandomGenerator/randomc.h
 
 FORMS    += mainwindow.ui
