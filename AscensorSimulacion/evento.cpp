@@ -17,19 +17,26 @@ int Evento::getTipoEvento() const{
 int Evento::getTiempo() const{
 
     return tiempo;
+}
 
+QString Evento::getNombreEvento() const{
+    return nombre;
 }
 
 void Evento::setTiempo(int tiempo){
 
-    this->tiempo;
+    this->tiempo = tiempo;
 }
 
 
 void Evento:: setTipoEvento(int tipoEvento){
 
-    this->tipoEvento;
+    this->tipoEvento = tipoEvento;
 
+}
+
+void Evento::setNombreEvento(QString nombre){
+    this->nombre = nombre;
 }
 
 

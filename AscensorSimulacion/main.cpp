@@ -2,6 +2,9 @@
 #include <QApplication>
 #include "mainsimulacion.h"
 
+#include <iostream>
+using namespace std;
+
 
 /* Comentado mientras no halla GUI
 
@@ -31,6 +34,7 @@ int main(){
                                capacidadMax,tiempoDesplazamiento, tEntradaAscensorPersona,
                                tSalidaAscensorPersona, cantidadSimulaciones);
     mainSimulacion.iniciarSimulacion();
+
 
     return 0;
 }

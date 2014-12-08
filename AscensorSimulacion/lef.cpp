@@ -14,14 +14,14 @@ Lef::~Lef()
 
 void Lef::ordenarLEF(){
     int size = LEF.length();
-    for (int i = 0; i < size; ++i) {
-        for (int j = i+1; j < size-1; ++j)
-        {
-            if(LEF.at(i).getTiempo() > LEF.at(j).getTiempo())
+    for (int i = 1; i < size; i++) {
+        for (int j = 0; j < size-1; ++j)
+        {            
+            if(LEF.at(j).getTiempo() > LEF.at(j+1).getTiempo())
             {
-                Evento tempEvent = LEF.at(i);
-                LEF.replace(i, LEF.at(j));
-                LEF.replace(j, tempEvent);
+                Evento tempEvent = LEF.at(j);
+                LEF.replace(j, LEF.at(j+1));
+                LEF.replace(j+1, tempEvent);
             }
         }
 
@@ -38,8 +38,9 @@ void Lef::agregarEvento(Evento evento){
 
 
 Evento Lef::quitarEvento(){
-
+   Evento primerEvento = LEF.at(0);
    LEF.removeFirst();
+   return primerEvento;
 
 }
 

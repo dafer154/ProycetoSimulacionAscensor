@@ -24,6 +24,9 @@ public:
     //edificio
     int cantidadPisos,cantidadAscensores;
 
+    //Variables de desempenio
+    int atendidos;
+
     QVector <int> colaAdentro,colaAfuera;//mainSimulacion;
 
 

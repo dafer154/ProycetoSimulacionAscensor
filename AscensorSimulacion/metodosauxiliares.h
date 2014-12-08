@@ -12,10 +12,9 @@ public:
     ~MetodosAuxiliares();
 
     void setTipoEvento(QString tipoEvento);
-    int cantidadPisos;
-    int calcularPisoAleatorioPersona();
+    int calcularPisoAleatorioPersona(int cantidadPisos);
     int calcularPisoDestinoAscensor(QVector<int> colaAfuera, QVector<int> colaAdentro,
-                                   int pisoActual, bool subiendo);
+                                   int pisoActual, bool subiendo, int cantidadPisos, bool ascensorLlleno);
 
     int tiempoEntreLLegadas(int pisoActualPersona);
 
