@@ -1,5 +1,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
+#include "escenario.h"
 
 #include <QMainWindow>
 
@@ -15,7 +16,7 @@ public:
     explicit MainWindow(QWidget *parent = 0);
 
     void nuevaTab();
-    void cerrarTab(int index);
+    //void cerrarTab(int index);
     ~MainWindow();
 
 private slots:
