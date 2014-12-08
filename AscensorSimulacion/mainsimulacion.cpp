@@ -1,6 +1,5 @@
 #include "mainsimulacion.h"
-#include <iostream>
-using namespace std;
+
 
 MainSimulacion::MainSimulacion()
 {
@@ -44,10 +43,13 @@ void MainSimulacion::inicializar(int cantidadAscensores, int tiempoArranque,
 
 void MainSimulacion::iniciarSimulacion(){
     int contador = 0;
+    Evento tempEvent;
     while(!lef.LEF.size()==0 || contador <= cantidadSimulaciones)
     {
+        tempEvent =lef.quitarEvento();
+        reloj= tempEvent.getTiempo();
         //Evento evento = lef.sacar();
-        switch(lef.quitarEvento().getTipoEvento())
+        switch(tempEvent.getTipoEvento())
         {
         case 0:   //0 = LPP
             llegadaPersonaPiso();
@@ -69,13 +71,14 @@ void MainSimulacion::llegadaPersonaPiso()
 {
 
     //1. Calcular piso Actual Persona
-    int pisoActualPersona=auxiliar.calcularPisoAleatorioPersona();
+    int pisoActualPersona=auxiliar.calcularPisoAleatorioPersona(this->cantidadPisos);
 
     // 1.Generar llegada persona piso
     Evento eventoLPP;
     int tiempoEntreLlegadas= auxiliar.tiempoEntreLLegadas(pisoActualPersona);
     eventoLPP.setTipoEvento(0);
-    eventoLPP.setTiempo(tiempoEntreLlegadas);
+    eventoLPP.setTiempo(reloj + tiempoEntreLlegadas);
+    eventoLPP.setNombreEvento("LPP");
     lef.agregarEvento(eventoLPP);
 
 
@@ -88,6 +91,7 @@ void MainSimulacion::llegadaPersonaPiso()
     Evento eventoEPA;
     eventoEPA.setTipoEvento(1);
     eventoEPA.setTiempo(this->reloj);
+    eventoEPA.setNombreEvento("EPA");
     lef.agregarEvento(eventoEPA);
 }
 
@@ -100,13 +104,25 @@ void MainSimulacion::entradaPersonaAscensor()
 
         //1.1 piso destino ascensor
        // metodo que quenera el piso del destino del ascensor
+        if(this->pActualAscensor == 0){
+            subiendo = true;
+        }else if (this->pActualAscensor == this->cantidadPisos-1) {
+            subiendo = false;
+        }
+        bool ascensorLleno = (this->capacidadOc == this->capacidadMax);
         this->pDestinoAscensor=auxiliar.calcularPisoDestinoAscensor(this->colaAfuera,
-                           this->colaAdentro, this->pActualAscensor, this->subiendo);
+                           this->colaAdentro, this->pActualAscensor, this->subiendo,
+                           this->cantidadPisos, ascensorLleno);
 
-       //2.1 Generar Cambio Piso Ascensor
+       if(this->pDestinoAscensor < this->pActualAscensor){
+           subiendo = false;
+       }else if(this->pDestinoAscensor > this->pActualAscensor){
+           subiendo = true;
+       }
+        //2.1 Generar Cambio Piso Ascensor
        Evento eventoCPA;
        eventoCPA.setTipoEvento(2);
-
+       eventoCPA.setNombreEvento("CPA");
        eventoCPA.setTiempo(this->reloj
                            +((this->colaAdentro.at(this->pActualAscensor))*(this->tSalidaAscensorPersona))
                            +((this->colaAfuera.at(this->pActualAscensor))*(this->tEntradaAscensorPersona)));
@@ -121,7 +137,10 @@ void MainSimulacion::entradaPersonaAscensor()
                                           this->colaAfuera.at(this->pActualAscensor)-1);
 
         //2.2 Piso Destino Persona
-        int pisoDestinoPersona=auxiliar.calcularPisoAleatorioPersona();
+        int pisoDestinoPersona=auxiliar.calcularPisoAleatorioPersona(this->cantidadPisos);
+        while (pisoDestinoPersona == this->pActualAscensor) {
+            pisoDestinoPersona=auxiliar.calcularPisoAleatorioPersona(this->cantidadPisos);
+        }
 
 
         //3.2 ColaAscensor[PisoDestinoPersona]++
@@ -137,6 +156,7 @@ void MainSimulacion::entradaPersonaAscensor()
         Evento eventoEPA;
         eventoEPA.setTipoEvento(1);
         eventoEPA.setTiempo(this->reloj);
+        eventoEPA.setNombreEvento("EPA");
         lef.agregarEvento(eventoEPA);
 
     }
@@ -157,19 +177,19 @@ void MainSimulacion::cambioPisoAscensor()
         eventoEPA.setTiempo(this->reloj
                             + this->tiempoArranque
                             + cantidadPisosARecorrer*this->tiempoDesplazamiento);
+        eventoEPA.setNombreEvento("EPA");
         lef.agregarEvento(eventoEPA);
     }
 
     else
     {
-        //3. atendidos ++; // variables de desempeño
-        int atendidos=0;
-        atendidos ++;
-        //4. ColaAscensor[PisoActual]--
-        this->colaAdentro.replace(this->pActualAscensor,
-                                           this->colaAdentro.at(this->pActualAscensor) -1);
+        int tamColaAdentro = colaAdentro.at(this->pActualAscensor);
+        //3. atendidos ++; // variables de desempeño        
+        atendidos += tamColaAdentro;
+        //4. ColaAscensor[PisoActual]
+        this->colaAdentro.replace(this->pActualAscensor, 0);
         //5. capacidad ocupada--
-        this->capacidadOc--;
+        this->capacidadOc-=tamColaAdentro;
 
     }
 }
