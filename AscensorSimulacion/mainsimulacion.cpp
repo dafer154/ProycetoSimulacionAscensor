@@ -1,4 +1,6 @@
 #include "mainsimulacion.h"
+#include <iostream>
+using namespace std;
 
 
 MainSimulacion::MainSimulacion()
@@ -12,7 +14,8 @@ MainSimulacion::~MainSimulacion()
 
 void MainSimulacion::inicializar(int cantidadAscensores, int tiempoArranque,
                                  int cantidadPisos, int capacidadMax, int tiempoDesplazamiento,
-                                 int tEntradaAscensorPersona, int tSalidaAscensorPersona, int cantidadSimulaciones){
+                                 int tEntradaAscensorPersona, int tSalidaAscensorPersona,
+                                 int cantidadSimulaciones, int tiempoSimulacion){
   capacidadOc=0;
   pActualAscensor=0;
   reloj=0;
@@ -24,6 +27,8 @@ void MainSimulacion::inicializar(int cantidadAscensores, int tiempoArranque,
   for (int i = 0; i < cantidadPisos; ++i) {
       colaAdentro.push_back(0);
       colaAfuera.push_back(0);
+      tamanoCola.push_back(0);
+      iniColaAcum.push_back(0);
   }
 
   this->cantidadAscensores=cantidadAscensores;
@@ -33,6 +38,7 @@ void MainSimulacion::inicializar(int cantidadAscensores, int tiempoArranque,
   this->capacidadMax = capacidadMax;
   this->tiempoDesplazamiento = tiempoDesplazamiento;
   this->cantidadSimulaciones = cantidadSimulaciones;
+  this->tiempoSimulacion = tiempoSimulacion*3600;
   Evento llegadaCero;
   llegadaCero.setTiempo(0);
   llegadaCero.setTipoEvento(0);
@@ -41,29 +47,43 @@ void MainSimulacion::inicializar(int cantidadAscensores, int tiempoArranque,
 }
 
 
-void MainSimulacion::iniciarSimulacion(){
-    int contador = 0;
-    Evento tempEvent;
-    while(!lef.LEF.size()==0 || contador <= cantidadSimulaciones)
-    {
-        tempEvent =lef.quitarEvento();
-        reloj= tempEvent.getTiempo();
-        //Evento evento = lef.sacar();
-        switch(tempEvent.getTipoEvento())
-        {
-        case 0:   //0 = LPP
-            llegadaPersonaPiso();
-            break;
-        case 1:   // 1 =EPA
-            entradaPersonaAscensor();
-            break;
-        case 2:   // 2 =CPA
-            cambioPisoAscensor();
-            break;
-        }
-        contador++;
+void MainSimulacion::iniciarSimulacion(int cantidadAscensores, int tiempoArranque,
+                                       int cantidadPisos, int capacidadMax, int tiempoDesplazamiento,
+                                       int tEntradaAscensorPersona, int tSalidaAscensorPersona,
+                                       int cantidadSimulaciones, int tiempoSimulacion){
+    QVector <double> tiemposPromedioEspera;
 
+    for (int i = 0; i < cantidadSimulaciones; ++i) {
+        int contador = 0;
+        inicializar(cantidadAscensores, tiempoArranque, cantidadPisos,
+                    capacidadMax,tiempoDesplazamiento, tEntradaAscensorPersona,
+                    tSalidaAscensorPersona, cantidadSimulaciones, tiempoSimulacion);
+        Evento tempEvent;
+        while(reloj <= this->tiempoSimulacion)
+        {
+            tempEvent =lef.quitarEvento();
+            reloj= tempEvent.getTiempo();
+            //Evento evento = lef.sacar();
+            switch(tempEvent.getTipoEvento())
+            {
+            case 0:   //0 = LPP
+                llegadaPersonaPiso();
+                break;
+            case 1:   // 1 =EPA
+                entradaPersonaAscensor();
+                break;
+            case 2:   // 2 =CPA
+                cambioPisoAscensor();
+                break;
+            }
+            contador++;
+        }
+        //tiemposPromedioEspera.push_back(tiempoEsperaAcum/(double)atendidos);
+        for (int i = 0; i < this->cantidadPisos; ++i) {
+            valorEsperadoColas.push_back(tamanoCola.at(i)/reloj);
+        }
     }
+
 }
 
 
@@ -84,6 +104,7 @@ void MainSimulacion::llegadaPersonaPiso()
 
 
     //3. ColaAfuera[PisoActualPersona]++
+    colaAcum(pActualAscensor);
     this->colaAfuera.replace(pisoActualPersona,
                                       this->colaAfuera.at(pisoActualPersona)+1);
 
@@ -123,9 +144,11 @@ void MainSimulacion::entradaPersonaAscensor()
        Evento eventoCPA;
        eventoCPA.setTipoEvento(2);
        eventoCPA.setNombreEvento("CPA");
+
+       //Variablle de Desempenio tiempoEsperaAcum
+       tiempoEsperaAcum += this->colaAdentro.at(this->pActualAscensor)*(this->tSalidaAscensorPersona);
        eventoCPA.setTiempo(this->reloj
-                           +((this->colaAdentro.at(this->pActualAscensor))*(this->tSalidaAscensorPersona))
-                           +((this->colaAfuera.at(this->pActualAscensor))*(this->tEntradaAscensorPersona)));
+                           +this->colaAdentro.at(this->pActualAscensor)*(this->tSalidaAscensorPersona));
 
        lef.agregarEvento(eventoCPA);
     }
@@ -133,6 +156,7 @@ void MainSimulacion::entradaPersonaAscensor()
     else
     {
         //1.2  ColaAfuera[PisoActualAscensor]--
+        colaAcum(pActualAscensor);
         this->colaAfuera.replace(this->pActualAscensor,
                                           this->colaAfuera.at(this->pActualAscensor)-1);
 
@@ -179,6 +203,9 @@ void MainSimulacion::cambioPisoAscensor()
                             + cantidadPisosARecorrer*this->tiempoDesplazamiento);
         eventoEPA.setNombreEvento("EPA");
         lef.agregarEvento(eventoEPA);
+
+        tiempoEsperaAcum =+ this->tiempoArranque
+        + cantidadPisosARecorrer*this->tiempoDesplazamiento;
     }
 
     else
@@ -190,7 +217,16 @@ void MainSimulacion::cambioPisoAscensor()
         this->colaAdentro.replace(this->pActualAscensor, 0);
         //5. capacidad ocupada--
         this->capacidadOc-=tamColaAdentro;
+        if(colaAfuera.at(this->pActualAscensor) >= 0){
+            tiempoEsperaAcum += tamColaAdentro * tSalidaAscensorPersona;
+        }
 
     }
+}
+
+void MainSimulacion::colaAcum(int piso){
+    tamanoCola.replace(piso, tamanoCola.at(piso)+
+                       (reloj-(iniColaAcum.at(piso)*tamanoCola.at(piso))));
+    iniColaAcum.replace(piso, reloj);
 }
 

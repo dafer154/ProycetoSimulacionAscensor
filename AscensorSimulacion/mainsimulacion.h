@@ -15,7 +15,7 @@ public:
 
     Lef lef; //lef
     //simulacion
-    int reloj, cantidadSimulaciones;
+    int reloj, cantidadSimulaciones, tiempoSimulacion;
     //Personas
     int tEntradaAscensorPersona,tSalidaAscensorPersona;
     //ascensor
@@ -25,7 +25,9 @@ public:
     int cantidadPisos,cantidadAscensores;
 
     //Variables de desempenio
-    int atendidos;
+    int atendidos, tiempoEsperaAcum;
+    QVector <int> tamanoCola, iniColaAcum;
+    QVector<double> valorEsperadoColas;
 
     QVector <int> colaAdentro,colaAfuera;//mainSimulacion;
 
@@ -33,9 +35,9 @@ public:
     void inicializar(int cantidadAscensores, int tiempoArranque,
                      int cantidadPisos, int capacidadMax, int tiempoDesplazamiento,
                      int tEntradaAscensorPersona, int tSalidaAscensorPersona,
-                     int cantidadSimulaciones);
+                     int cantidadSimulaciones, int tiempoSimulacion);
 
-    void iniciarSimulacion();
+    void iniciarSimulacion(int cantidadAscensores, int tiempoArranque, int cantidadPisos, int capacidadMax, int tiempoDesplazamiento, int tEntradaAscensorPersona, int tSalidaAscensorPersona, int cantidadSimulaciones, int tiempoSimulacion);
 
     MetodosAuxiliares auxiliar;
     Aleatorios aleatorio;
@@ -44,6 +46,7 @@ public:
     void llegadaPersonaPiso();
     void entradaPersonaAscensor();
     void cambioPisoAscensor();
+    void colaAcum(int piso);
 
 
 };

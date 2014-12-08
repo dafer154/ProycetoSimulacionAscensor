@@ -28,12 +28,12 @@ int main(){
     int tEntradaAscensorPersona = 1;
     int tSalidaAscensorPersona = 1;
     int cantidadSimulaciones = 10;
+    int tiempoSimulacion = 8;
 
     MainSimulacion mainSimulacion;
-    mainSimulacion.inicializar(cantidadAscensores, tiempoArranque, cantidadPisos,
-                               capacidadMax,tiempoDesplazamiento, tEntradaAscensorPersona,
-                               tSalidaAscensorPersona, cantidadSimulaciones);
-    mainSimulacion.iniciarSimulacion();
+    mainSimulacion.iniciarSimulacion(cantidadAscensores, tiempoArranque, cantidadPisos,
+                                     capacidadMax,tiempoDesplazamiento, tEntradaAscensorPersona,
+                                     tSalidaAscensorPersona, cantidadSimulaciones, tiempoSimulacion);
 
 
     return 0;
