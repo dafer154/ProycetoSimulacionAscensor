@@ -20,7 +20,8 @@ SOURCES += main.cpp\
     metodosauxiliares.cpp \
     mainsimulacion.cpp \
     RandomGenerator/mersenne.cpp \
-    RandomGenerator/mother.cpp
+    RandomGenerator/mother.cpp \
+    escenario.cpp
 
 HEADERS  += mainwindow.h \
     aleatorios.h \
@@ -28,6 +29,8 @@ HEADERS  += mainwindow.h \
     lef.h \
     metodosauxiliares.h \
     mainsimulacion.h \
-    RandomGenerator/randomc.h
+    RandomGenerator/randomc.h \
+    escenario.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    escenario.ui

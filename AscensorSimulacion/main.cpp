@@ -7,8 +7,6 @@
 using namespace std;
 
 
-/* Comentado mientras no halla GUI
-
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
@@ -17,9 +15,10 @@ int main(int argc, char *argv[])
 
     return a.exec();
 }
-*/
 
-//Para hacer cosas con consola mientras no hay GUI
+
+//Para hacer cosas con consola mientras no hay
+/*
 int main(){
     int cantidadAscensores = 1;    
     int cantidadPisos = 6;
@@ -41,3 +40,4 @@ int main(){
 
     return 0;
 }
+*/

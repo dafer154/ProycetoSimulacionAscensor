@@ -66,6 +66,8 @@ void MainSimulacion::iniciarSimulacion(int cantidadAscensores, int tiempoArranqu
                                        int cantidadPisos, int capacidadMax, int tiempoDesplazamiento,
                                        int tEntradaAscensorPersona, int tSalidaAscensorPersona,
                                        int cantidadSimulaciones, int tiempoSimulacion){
+    variablesDesempenio.clear();
+
     QVector <double> tiemposPromedioEspera;
     for (int i = 0; i < cantidadSimulaciones; ++i) {
         int contador = 0;
@@ -126,11 +128,6 @@ void MainSimulacion::iniciarSimulacion(int cantidadAscensores, int tiempoArranqu
    agregarDatosVarDesem(tiemposEsperaGeneral);
 
 
-
-
-
-
-    int hola;
 
 }
 
