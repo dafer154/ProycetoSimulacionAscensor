@@ -30,6 +30,13 @@ int MetodosAuxiliares::calcularPisoAleatorioPersona(int cantidadPisos){
     return floor(aleatorioUniforme/tamanioIntervalos)-3;
 }
 
+
+
+int MetodosAuxiliares::generarAleatorioRango(int inferior, int superior){
+    double tamanioIntervalos = 1/(double) (superior + 1 - inferior);
+    return floor(aleatorios.generarAleatorioUniforme()/tamanioIntervalos);
+}
+
 int MetodosAuxiliares::calcularPisoDestinoAscensor(QVector<int> colaAfuera, QVector<int> colaAdentro,
                                                   int pisoActual, bool subiendo,
                                                    int cantidadPisos, bool ascensorLlleno){
@@ -93,3 +100,41 @@ int MetodosAuxiliares::tiempoEntreLLegadas(int pisoActualPersona){
         return aleatorios.generarEnteroAleatorioExponencial(0.02);
     }
 }
+
+double MetodosAuxiliares::promedio(QVector<double> valores){
+    double suma;
+    int size=valores.size();
+
+    for (int i = 0; i < size; ++i)
+        suma+=valores.at(i);
+    return suma/size;
+}
+
+
+
+double MetodosAuxiliares::desviacionEstandar(QVector<double> valores,double promedio){
+    double sumatoria=0;
+    int valor;
+    foreach (valor, valores){
+        sumatoria+=pow(valor-promedio,2);
+    }
+    return sqrt(sumatoria/(valores.size()-1));
+}
+
+
+double MetodosAuxiliares::intervaloConfianzaInferior(double promedio,int tamValores,double desviacion){
+
+    return promedio-(1.96*(desviacion/sqrt(tamValores)));
+
+}
+
+double MetodosAuxiliares::intervaloConfianzaSuperior(double promedio,int tamValores,double desviacion){
+
+    return promedio+(1.96*(desviacion/sqrt(tamValores)));
+}
+
+
+
+
+
+

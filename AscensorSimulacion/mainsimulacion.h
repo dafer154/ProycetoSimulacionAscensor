@@ -25,11 +25,18 @@ public:
     int cantidadPisos,cantidadAscensores;
 
     //Variables de desempenio
-    int atendidos, tiempoEsperaAcum;
-    QVector <int> tamanoCola, iniColaAcum;
-    QVector<double> valorEsperadoColas;
+    QVector <double> variablesDesempenio;
 
-    QVector <int> colaAdentro,colaAfuera;//mainSimulacion;
+    int atendidos, tamanoCola, iniColaAcum, colaMaxima, capacidadOcGlobal, iniCapacidadOcuAcum;
+
+    QVector <double> valorEsperadoColas, atendidosPorSimulacion, capacidadPromedioOcupada,tiemposEspera,tiemposEsperaGeneral;
+    int sumarColas();
+    void agregarDatosVarDesem(QVector<double> valoresDesem);
+
+
+
+
+    QVector <int> colaAdentro,colaAfueraArriba, colaAfueraAbajo;//mainSimulacion;
 
 
     void inicializar(int cantidadAscensores, int tiempoArranque,
@@ -42,11 +49,23 @@ public:
     MetodosAuxiliares auxiliar;
     Aleatorios aleatorio;
 
-
+    //Eventos
     void llegadaPersonaPiso();
-    void entradaPersonaAscensor();
-    void cambioPisoAscensor();
-    void colaAcum(int piso);
+    void entradaPersonaAscensor(int tiempoLlegada);
+    void cambioPisoAscensor(int tiempoLlegada);
+
+
+
+    void colaAcum();
+    void calcularColaMax();
+    void capacidadOcAcum();
+
+    //Temporales
+    //Cantidad de Personas que Llegan
+    QVector <int> llegadasPorPiso;
+    int totalQueLlegan;
+
+
 
 
 };

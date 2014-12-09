@@ -1,4 +1,5 @@
 #include "mainsimulacion.h"
+#include "math.h"
 #include <iostream>
 using namespace std;
 
@@ -21,14 +22,23 @@ void MainSimulacion::inicializar(int cantidadAscensores, int tiempoArranque,
   reloj=0;
   subiendo=true;
   this->cantidadPisos= cantidadPisos;
-  colaAdentro;
-  colaAfuera;
+  capacidadOcGlobal=0;
 
+
+  atendidos=0;
+  colaAdentro.clear();
+  colaAfueraArriba.clear();
+  colaAfueraAbajo.clear();
+  tamanoCola=0;
+  iniColaAcum=0;
+  colaMaxima=0;
+  llegadasPorPiso.clear();
   for (int i = 0; i < cantidadPisos; ++i) {
       colaAdentro.push_back(0);
-      colaAfuera.push_back(0);
-      tamanoCola.push_back(0);
-      iniColaAcum.push_back(0);
+      colaAfueraAbajo.push_back(0);
+      colaAfueraArriba.push_back(0);
+
+      llegadasPorPiso.push_back(0);
   }
 
   this->cantidadAscensores=cantidadAscensores;
@@ -43,6 +53,11 @@ void MainSimulacion::inicializar(int cantidadAscensores, int tiempoArranque,
   llegadaCero.setTiempo(0);
   llegadaCero.setTipoEvento(0);
   this->lef.agregarEvento(llegadaCero);
+  tiemposEspera.clear();
+
+
+  //Temporales
+  totalQueLlegan =0;
 
 }
 
@@ -52,7 +67,6 @@ void MainSimulacion::iniciarSimulacion(int cantidadAscensores, int tiempoArranqu
                                        int tEntradaAscensorPersona, int tSalidaAscensorPersona,
                                        int cantidadSimulaciones, int tiempoSimulacion){
     QVector <double> tiemposPromedioEspera;
-
     for (int i = 0; i < cantidadSimulaciones; ++i) {
         int contador = 0;
         inicializar(cantidadAscensores, tiempoArranque, cantidadPisos,
@@ -70,19 +84,53 @@ void MainSimulacion::iniciarSimulacion(int cantidadAscensores, int tiempoArranqu
                 llegadaPersonaPiso();
                 break;
             case 1:   // 1 =EPA
-                entradaPersonaAscensor();
+                entradaPersonaAscensor(tempEvent.getTiempollegada());
                 break;
             case 2:   // 2 =CPA
-                cambioPisoAscensor();
+                cambioPisoAscensor(tempEvent.getTiempollegada());
                 break;
             }
             contador++;
         }
-        //tiemposPromedioEspera.push_back(tiempoEsperaAcum/(double)atendidos);
-        for (int i = 0; i < this->cantidadPisos; ++i) {
-            valorEsperadoColas.push_back(tamanoCola.at(i)/reloj);
-        }
+
+
+        //variable de desempenio atendidos por simulacion
+        atendidosPorSimulacion.push_back(atendidos);
+       //variable de desempenio valor esperado de cola por simulacion
+        valorEsperadoColas.push_back(tamanoCola/(double)reloj);
+        //variable de desempenio capacidad ocupada ascensor por simulacion
+        capacidadPromedioOcupada.push_back(capacidadOcGlobal/(double)reloj);
+       //variable de desempenio tiempo promedio de espera
+        tiemposEsperaGeneral.push_back(auxiliar.promedio(tiemposEspera));
+
     }
+
+
+
+
+   //variable de desempenio atendidos
+
+    agregarDatosVarDesem(atendidosPorSimulacion);
+
+    //variable de desempenio valor esperado cola general
+
+    agregarDatosVarDesem(valorEsperadoColas);
+
+
+     //variable de desempenio capacidad ocupada ascensor
+
+    agregarDatosVarDesem(capacidadPromedioOcupada);
+
+    //variable de desempenio tiempo promedio de espera
+
+   agregarDatosVarDesem(tiemposEsperaGeneral);
+
+
+
+
+
+
+    int hola;
 
 }
 
@@ -101,93 +149,207 @@ void MainSimulacion::llegadaPersonaPiso()
     eventoLPP.setNombreEvento("LPP");
     lef.agregarEvento(eventoLPP);
 
+    //Decidir a que direccion debo ir
+    int decision = auxiliar.generarAleatorioRango(0,1);
+    if((pisoActualPersona == 0 || decision == 1) && pisoActualPersona != this->cantidadPisos-1){
+        //3.1 ColaAfuera[PisoActualPersona]++
+        this->colaAfueraArriba.replace(pisoActualPersona,
+                                          this->colaAfueraArriba.at(pisoActualPersona)+1);
+    }else{
+        //3.2 ColaAfuera[PisoActualPersona]++
+        this->colaAfueraAbajo.replace(pisoActualPersona,
+                                      this->colaAfueraAbajo.at(pisoActualPersona)+1);
+    }
+
+    //Variables de desempenio relacionadas con la cola
+    colaAcum();
 
 
-    //3. ColaAfuera[PisoActualPersona]++
-    colaAcum(pActualAscensor);
-    this->colaAfuera.replace(pisoActualPersona,
-                                      this->colaAfuera.at(pisoActualPersona)+1);
+
+    //Cola Maxima
+    calcularColaMax();
+
+    this->llegadasPorPiso.replace(pisoActualPersona,
+                                  llegadasPorPiso.at(pisoActualPersona)+1);
+    totalQueLlegan++;
 
     //4. Generar entrada persona Ascensor
     Evento eventoEPA;
     eventoEPA.setTipoEvento(1);
     eventoEPA.setTiempo(this->reloj);
     eventoEPA.setNombreEvento("EPA");
+    eventoEPA.setTiempoLlegada(reloj);
     lef.agregarEvento(eventoEPA);
 }
 
 
-void MainSimulacion::entradaPersonaAscensor()
-{
-    if((this->capacidadOc==this->capacidadMax)
-            ||(this->colaAfuera.at(this->pActualAscensor)== 0))
-    {
-
-        //1.1 piso destino ascensor
-       // metodo que quenera el piso del destino del ascensor
-        if(this->pActualAscensor == 0){
-            subiendo = true;
-        }else if (this->pActualAscensor == this->cantidadPisos-1) {
-            subiendo = false;
-        }
-        bool ascensorLleno = (this->capacidadOc == this->capacidadMax);
-        this->pDestinoAscensor=auxiliar.calcularPisoDestinoAscensor(this->colaAfuera,
-                           this->colaAdentro, this->pActualAscensor, this->subiendo,
-                           this->cantidadPisos, ascensorLleno);
-
-       if(this->pDestinoAscensor < this->pActualAscensor){
-           subiendo = false;
-       }else if(this->pDestinoAscensor > this->pActualAscensor){
-           subiendo = true;
-       }
-        //2.1 Generar Cambio Piso Ascensor
-       Evento eventoCPA;
-       eventoCPA.setTipoEvento(2);
-       eventoCPA.setNombreEvento("CPA");
-
-       //Variablle de Desempenio tiempoEsperaAcum
-       tiempoEsperaAcum += this->colaAdentro.at(this->pActualAscensor)*(this->tSalidaAscensorPersona);
-       eventoCPA.setTiempo(this->reloj
-                           +this->colaAdentro.at(this->pActualAscensor)*(this->tSalidaAscensorPersona));
-
-       lef.agregarEvento(eventoCPA);
+void MainSimulacion::entradaPersonaAscensor(int tiempoLlegada){
+    int pisoDestinoPersona;
+    if(this->pActualAscensor == 0){
+        subiendo = true;
+    }else if (this->pActualAscensor == this->cantidadPisos-1) {
+        subiendo = false;
     }
+    if(subiendo){
 
-    else
-    {
-        //1.2  ColaAfuera[PisoActualAscensor]--
-        colaAcum(pActualAscensor);
-        this->colaAfuera.replace(this->pActualAscensor,
-                                          this->colaAfuera.at(this->pActualAscensor)-1);
+        if((this->capacidadOc==this->capacidadMax)
+                ||(colaAfueraArriba.at(this->pActualAscensor)== 0))
+        {
 
-        //2.2 Piso Destino Persona
-        int pisoDestinoPersona=auxiliar.calcularPisoAleatorioPersona(this->cantidadPisos);
-        while (pisoDestinoPersona == this->pActualAscensor) {
-            pisoDestinoPersona=auxiliar.calcularPisoAleatorioPersona(this->cantidadPisos);
+            //1.1 piso destino ascensor
+           // metodo que quenera el piso del destino del ascensor
+            bool ascensorLleno = (this->capacidadOc == this->capacidadMax);
+            this->pDestinoAscensor=auxiliar.calcularPisoDestinoAscensor(colaAfueraArriba,
+                               this->colaAdentro, this->pActualAscensor, this->subiendo,
+                               this->cantidadPisos, ascensorLleno);
+            if(this->pDestinoAscensor == this->pActualAscensor){
+                this->pDestinoAscensor=auxiliar.calcularPisoDestinoAscensor(colaAfueraAbajo,
+                                   this->colaAdentro, this->pActualAscensor, this->subiendo,
+                                   this->cantidadPisos, ascensorLleno);
+            }
+
+           if(this->pDestinoAscensor < this->pActualAscensor){
+               subiendo = false;
+           }else if(this->pDestinoAscensor > this->pActualAscensor){
+               subiendo = true;
+           }
+            //2.1 Generar Cambio Piso Ascensor
+           Evento eventoCPA;
+           eventoCPA.setTipoEvento(2);
+           eventoCPA.setNombreEvento("CPA");
+           eventoCPA.setTiempoLlegada(tiempoLlegada);
+
+           //Variable de Desempenio tiempoEsperaAcum
+
+           eventoCPA.setTiempo(this->reloj
+                               +this->colaAdentro.at(this->pActualAscensor)*(this->tSalidaAscensorPersona));
+
+           lef.agregarEvento(eventoCPA);
         }
 
+        else
+        {
+            //1.2  ColaAfuera[PisoActualAscensor]--
+            colaAcum();
+            colaAfueraArriba.replace(this->pActualAscensor,
+                                              colaAfueraArriba.at(this->pActualAscensor)-1);
 
-        //3.2 ColaAscensor[PisoDestinoPersona]++
+            //2.2 Piso Destino Persona
+            do{
+                pisoDestinoPersona=auxiliar.generarAleatorioRango(this->pActualAscensor, this->cantidadPisos-1);
+            }while (pisoDestinoPersona == this->pActualAscensor);
 
-        this->colaAdentro.replace(pisoDestinoPersona,
-                                           this->colaAdentro.at(pisoDestinoPersona) + 1);
 
-        //4.2 capacidadOcupada++
+            //3.2 ColaAscensor[PisoDestinoPersona]++
 
-        this->capacidadOc++;
+            this->colaAdentro.replace(pisoDestinoPersona,
+                                               this->colaAdentro.at(pisoDestinoPersona) + 1);
 
-        //5.2 Generar entrada persona ascensor
-        Evento eventoEPA;
-        eventoEPA.setTipoEvento(1);
-        eventoEPA.setTiempo(this->reloj);
-        eventoEPA.setNombreEvento("EPA");
-        lef.agregarEvento(eventoEPA);
+            //4.2 capacidadOcupada++
 
+            this->capacidadOc++;
+            //Variable desempenio espera
+            tiemposEspera.push_back(reloj-tiempoLlegada);
+
+
+            //variable de desempenio capacidad ocupada promedio
+            capacidadOcAcum();
+
+
+            //5.2 Generar entrada persona ascensor
+           /* Evento eventoEPA;
+            eventoEPA.setTipoEvento(1);
+            eventoEPA.setTiempo(this->reloj);
+            eventoEPA.setNombreEvento("EPA");
+            lef.agregarEvento(eventoEPA);*/
+
+
+        }
+    }else{
+
+        if((this->capacidadOc==this->capacidadMax)
+                ||(colaAfueraAbajo.at(this->pActualAscensor)== 0))
+        {
+
+            //1.1 piso destino ascensor
+           // metodo que quenera el piso del destino del ascensor
+
+            bool ascensorLleno = (this->capacidadOc == this->capacidadMax);
+            this->pDestinoAscensor=auxiliar.calcularPisoDestinoAscensor(colaAfueraAbajo,
+                               this->colaAdentro, this->pActualAscensor, this->subiendo,
+                               this->cantidadPisos, ascensorLleno);
+            if(this->pDestinoAscensor == this->pActualAscensor){
+                this->pDestinoAscensor=auxiliar.calcularPisoDestinoAscensor(colaAfueraArriba,
+                                   this->colaAdentro, this->pActualAscensor, this->subiendo,
+                                   this->cantidadPisos, ascensorLleno);
+            }
+
+           if(this->pDestinoAscensor < this->pActualAscensor){
+               subiendo = false;
+           }else if(this->pDestinoAscensor > this->pActualAscensor){
+               subiendo = true;
+           }
+            //2.1 Generar Cambio Piso Ascensor
+           Evento eventoCPA;
+           eventoCPA.setTipoEvento(2);
+           eventoCPA.setNombreEvento("CPA");
+           eventoCPA.setTiempoLlegada(tiempoLlegada);
+
+           //Variable de Desempenio tiempoEsperaAcum
+
+           eventoCPA.setTiempo(this->reloj
+                               +this->colaAdentro.at(this->pActualAscensor)*(this->tSalidaAscensorPersona));
+
+           lef.agregarEvento(eventoCPA);
+        }
+
+        else
+        {
+            //1.2  ColaAfuera[PisoActualAscensor]--
+            colaAcum();
+            colaAfueraAbajo.replace(this->pActualAscensor,
+                                              colaAfueraAbajo.at(this->pActualAscensor)-1);
+
+            //2.2 Piso Destino Persona
+            do{
+                pisoDestinoPersona=auxiliar.calcularPisoAleatorioPersona(this->pActualAscensor);
+            }while (pisoDestinoPersona == this->pActualAscensor);
+
+
+            //3.2 ColaAscensor[PisoDestinoPersona]++
+
+            this->colaAdentro.replace(pisoDestinoPersona,
+                                               this->colaAdentro.at(pisoDestinoPersona) + 1);
+
+            //4.2 capacidadOcupada++
+
+            this->capacidadOc++;
+
+            //Variable desempenio espera
+            tiemposEspera.push_back(reloj-tiempoLlegada);
+
+            //variable de desempenio capacidad ocupada promedio
+            capacidadOcAcum();
+
+
+            //5.2 Generar entrada persona ascensor
+            /*Evento eventoEPA;
+            eventoEPA.setTipoEvento(1);
+            eventoEPA.setTiempo(this->reloj);
+            eventoEPA.setNombreEvento("EPA");
+            lef.agregarEvento(eventoEPA);*/
+
+
+        }
     }
+
 }
 
-void MainSimulacion::cambioPisoAscensor()
+
+
+void MainSimulacion::cambioPisoAscensor(int tiempoLlegada)
 {
+
 
     int cantidadPisosARecorrer = abs(this->pActualAscensor - this->pDestinoAscensor);
     //1. pisoActualAscensor = pisoDestinoAscensor
@@ -202,31 +364,88 @@ void MainSimulacion::cambioPisoAscensor()
                             + this->tiempoArranque
                             + cantidadPisosARecorrer*this->tiempoDesplazamiento);
         eventoEPA.setNombreEvento("EPA");
+        eventoEPA.setTiempoLlegada(tiempoLlegada);
         lef.agregarEvento(eventoEPA);
 
-        tiempoEsperaAcum =+ this->tiempoArranque
-        + cantidadPisosARecorrer*this->tiempoDesplazamiento;
+
     }
 
     else
     {
         int tamColaAdentro = colaAdentro.at(this->pActualAscensor);
-        //3. atendidos ++; // variables de desempeño        
+        //3. atendidos ++; // variables de desempeño
+
+
         atendidos += tamColaAdentro;
         //4. ColaAscensor[PisoActual]
         this->colaAdentro.replace(this->pActualAscensor, 0);
         //5. capacidad ocupada--
         this->capacidadOc-=tamColaAdentro;
-        if(colaAfuera.at(this->pActualAscensor) >= 0){
-            tiempoEsperaAcum += tamColaAdentro * tSalidaAscensorPersona;
-        }
+
+        //variable de desempenio capacidad ocupada promedio
+        capacidadOcAcum();
 
     }
 }
 
-void MainSimulacion::colaAcum(int piso){
-    tamanoCola.replace(piso, tamanoCola.at(piso)+
-                       (reloj-(iniColaAcum.at(piso)*tamanoCola.at(piso))));
-    iniColaAcum.replace(piso, reloj);
+void MainSimulacion::colaAcum(){
+    tamanoCola+=(reloj-iniColaAcum)*(sumarColas());
+    iniColaAcum=reloj;
 }
+
+
+
+void MainSimulacion::calcularColaMax(){
+
+    int tamCola=sumarColas();
+
+    if(tamCola > colaMaxima){
+        colaMaxima=tamCola;
+    }
+}
+
+void MainSimulacion::capacidadOcAcum(){
+
+    capacidadOcGlobal+=(reloj-iniCapacidadOcuAcum)*(capacidadOc);
+    iniCapacidadOcuAcum=reloj;
+}
+
+
+int MainSimulacion::sumarColas(){
+
+    int acum=0;
+    for (int i = 0; i < cantidadPisos; ++i) {
+
+        acum+=colaAfueraArriba.at(i) + colaAfueraAbajo.at(i);
+
+    }
+    return acum;
+}
+
+void MainSimulacion::agregarDatosVarDesem(QVector<double> valoresDesem){
+
+
+    double promedioTemp;
+    double desviacionTemp;
+
+    //variable de desempenio atendidos
+
+    promedioTemp=auxiliar.promedio(valoresDesem);
+    desviacionTemp=auxiliar.desviacionEstandar(valoresDesem,promedioTemp);
+
+     variablesDesempenio.push_back(promedioTemp);
+     variablesDesempenio.push_back(desviacionTemp);
+     variablesDesempenio.push_back(auxiliar.intervaloConfianzaInferior(promedioTemp,
+                                                                       cantidadSimulaciones,
+                                                                       desviacionTemp));
+     variablesDesempenio.push_back(auxiliar.intervaloConfianzaSuperior(promedioTemp,
+                                                                       cantidadSimulaciones,
+                                                                       desviacionTemp));
+
+}
+
+
+
+
+
 

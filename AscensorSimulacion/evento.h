@@ -10,6 +10,7 @@ private:
     int tipoEvento;//
     int tiempo;//
     QString nombre;
+    int tiempoLlegada;
 
 public:
 
@@ -19,9 +20,11 @@ public:
     int getTipoEvento() const;
     QString getNombreEvento() const;
     int getTiempo () const;
+    int getTiempollegada() const;
     void setTipoEvento(int tipoEvento);
     void setTiempo(int tiempo);
     void setNombreEvento(QString nombre);
+    void setTiempoLlegada(int valor);
 
 
 

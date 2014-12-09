@@ -3,6 +3,7 @@
 
 #include "aleatorios.h"
 #include <QVector>
+#include"math.h"
 
 class MetodosAuxiliares
 {
@@ -17,6 +18,14 @@ public:
                                    int pisoActual, bool subiendo, int cantidadPisos, bool ascensorLlleno);
 
     int tiempoEntreLLegadas(int pisoActualPersona);
+
+    int generarAleatorioRango(int inferior, int superior);
+    double desviacionEstandar(QVector<double> valores, double promedio);
+    double promedio(QVector<double> valores);
+    double intervaloConfianzaInferior(double promedio, int tamValores, double desviacion);
+    double intervaloConfianzaSuperior(double promedio, int tamValores, double desviacion);
+
+
 
     Aleatorios aleatorios;
 };

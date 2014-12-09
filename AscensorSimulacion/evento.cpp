@@ -22,7 +22,9 @@ int Evento::getTiempo() const{
 QString Evento::getNombreEvento() const{
     return nombre;
 }
-
+int Evento::getTiempollegada() const{
+    return tiempoLlegada;
+}
 void Evento::setTiempo(int tiempo){
 
     this->tiempo = tiempo;
@@ -35,8 +37,13 @@ void Evento:: setTipoEvento(int tipoEvento){
 
 }
 
+
 void Evento::setNombreEvento(QString nombre){
     this->nombre = nombre;
+}
+
+void Evento::setTiempoLlegada(int valor){
+    this->tiempoLlegada=valor;
 }
 
 
